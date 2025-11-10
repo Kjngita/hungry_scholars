@@ -6,11 +6,31 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/11/04 22:20:48 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/10 19:03:45 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "header_philos.h"
+#include "header_philo.h"
+
+
+int	main(int ac, char **av)
+{
+	int	i;
+	int number_of_philos;
+
+	if (!(ac == 5 || ac == 6))
+		return (print_msg_n_return_value("Incorrect number of arguments", 1));
+	i = 1;
+	while (i < ac)
+	{
+		if (validate_args(av[i]) == -1)
+			return (1);
+		i++;
+	}
+	number_of_philos = ft_atoi(av[1]);
+	// if (init_philo(number_of_philos, ac, av) == -1)
+	// 	return (1);
+}
 
 int	ft_atoi(char *str)
 {
@@ -33,35 +53,10 @@ int	ft_atoi(char *str)
 	{
 		if (nbr > INT_MAX || str[i] < '0' || str[i] > '9')
 			return (-1);
-		nbr = (nbr * 10) + str[i] % 10;
+		nbr = (nbr * 10 + str[i]) - '0';
 		i++;
 	}
-	nbr = nbr * sign;
-	return (nbr);
-}
-
-int	main (int ac, char **av)
-{
-	int	i;
-
-	if (ac == 5 || ac == 6)
-	{
-		i = 1;
-		while (i < ac)
-		{
-			if (validate_args(av[i]) == -1)
-				return (1);
-			i++;
-		}
-		int number_of_philosophers = ft_atoi(av[1]);
-		int time_to_die = ft_atoi(av[2]);
-		int time_to_eat = ft_atoi(av[3]);
-		int time_to_sleep = ft_atoi(av[4]);
-		if (ac == 6)
-		{
-			int number_of_meals = ft_atoi(av[5]);
-		}
-	}
+	return (nbr * sign);
 }
 
 int	validate_args(char *arg)
@@ -72,6 +67,13 @@ int	validate_args(char *arg)
 		return (-1);
 	number = ft_atoi(arg);
 	if (number <= 0)
-		return (-1);
+		return (print_msg_n_return_value("Invalid argument", -1));
 	return (0);
+}
+
+int	print_msg_n_return_value(char *msg, int value)
+{
+	if (msg)
+		printf("%s\n", msg);
+	return (value);
 }
