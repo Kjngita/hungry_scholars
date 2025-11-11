@@ -6,30 +6,53 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/11/10 19:03:45 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/11 22:42:50 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header_philo.h"
 
-
 int	main(int ac, char **av)
 {
-	int	i;
-	int number_of_philos;
+	t_data	data;
 
 	if (!(ac == 5 || ac == 6))
 		return (print_msg_n_return_value("Incorrect number of arguments", 1));
+	if (validate_args(ac, av) == -1)
+		return (1);
+	memset(&data, 0, sizeof(t_data));
+	if (register_data(ac, av, &data) == -1)
+		return (1);
+	if (init_threads(&data) == -1)
+		return (1);
+	printf("Got here\n");
+	cleanup_data(&data);
+	return (0);
+}
+
+int	print_msg_n_return_value(char *msg, int value)
+{
+	if (msg)
+		printf("%s\n", msg);
+	return (value);
+}
+
+int	validate_args(int ac, char **av)
+{
+	int	i;
+	int	number;
+
+	if (!av || !*av)
+		return (-1);
 	i = 1;
 	while (i < ac)
 	{
-		if (validate_args(av[i]) == -1)
-			return (1);
+		number = ft_atoi(av[i]);
+		if (number <= 0)
+			return (print_msg_n_return_value("Invalid argument", -1));
 		i++;
 	}
-	number_of_philos = ft_atoi(av[1]);
-	// if (init_philo(number_of_philos, ac, av) == -1)
-	// 	return (1);
+	return (0);
 }
 
 int	ft_atoi(char *str)
@@ -59,21 +82,10 @@ int	ft_atoi(char *str)
 	return (nbr * sign);
 }
 
-int	validate_args(char *arg)
+void	cleanup_data(t_data *data)
 {
-	int	number;
-
-	if (!arg)
-		return (-1);
-	number = ft_atoi(arg);
-	if (number <= 0)
-		return (print_msg_n_return_value("Invalid argument", -1));
-	return (0);
-}
-
-int	print_msg_n_return_value(char *msg, int value)
-{
-	if (msg)
-		printf("%s\n", msg);
-	return (value);
+	if (data->philo_threads)
+		free (data->philo_threads);
+	if (data->philo_queue)
+		free (data->philo_queue);
 }
