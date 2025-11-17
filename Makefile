@@ -4,7 +4,9 @@ FLAGS = -Wall -Wextra -Werror -pthread -g
 HEADER = header_philo.h
 
 CFILES = main.c \
-	init_philos.c
+	arg_validation.c \
+	init_philos.c \
+
 O_DIR = objdir
 OFILES = $(addprefix $(O_DIR)/,$(CFILES:.c=.o))
 
