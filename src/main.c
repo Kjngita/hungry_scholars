@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/11/17 21:12:44 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/19 22:52:52 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int	print_msg_n_return_value(char *msg, int value)
 
 void	cleanup_data(t_data *data)
 {
-	int	i;
+	size_t	i;
 
 	if (!data)
 		return ;
@@ -61,7 +61,7 @@ void	cleanup_data(t_data *data)
 	if (data->forks)
 	{
 		i = 0;
-		while (i < data->nbr_of_philos)
+		while (i < data->head_count)
 		{
 			pthread_mutex_destroy(&data->forks[i]);
 			i++;

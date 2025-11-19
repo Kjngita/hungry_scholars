@@ -1,14 +1,17 @@
 NAME = philo
 
 FLAGS = -Wall -Wextra -Werror -pthread -g
-HEADER = header_philo.h
+HEADER = inc/header_philo.h
 
-CFILES = main.c \
-	arg_validation.c \
-	init_philos.c \
+S_DIR = src
+CFILES = $(S_DIR)/main.c \
+	$(S_DIR)/arg_validation.c \
+	$(S_DIR)/init_philos.c \
+	$(S_DIR)/supervisor_tasks.c
+
 
 O_DIR = objdir
-OFILES = $(addprefix $(O_DIR)/,$(CFILES:.c=.o))
+OFILES = $(CFILES:$(S_DIR)/%.c=$(O_DIR)/%.o)  #$(addprefix $(O_DIR)/,$(CFILES:.c=.o))
 
 all: $(NAME)
 
@@ -19,8 +22,8 @@ $(NAME): $(OFILES)
 $(O_DIR):
 	mkdir -p $@
 
-$(O_DIR)/%.o: %.c $(HEADER) | $(O_DIR)
-	cc $(FLAGS) -c $< -o $@
+$(O_DIR)/%.o: $(S_DIR)/%.c $(HEADER) | $(O_DIR)
+	cc $(FLAGS) -c -Iinc $< -o $@
 
 clean:
 	rm -rf $(O_DIR)
