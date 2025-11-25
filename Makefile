@@ -6,7 +6,9 @@ HEADER = inc/header_philo.h
 S_DIR = src
 CFILES = $(S_DIR)/main.c \
 	$(S_DIR)/arg_validation.c \
+	$(S_DIR)/data_register.c \
 	$(S_DIR)/init_philos.c \
+	$(S_DIR)/philos_schedule.c \
 	$(S_DIR)/supervisor_tasks.c
 
 
