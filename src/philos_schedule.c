@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/11/25 22:24:08 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/26 18:47:19 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@ void	*philo_prog(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	printf("Created thread #%zu\n", philo->id);
 	while (1)
 	{
+		if (philo->data->stop_prog)
+			return (NULL);
 		if (philo->data->start_time_of_prog)
-		{
-			philo->last_bite = philo->data->start_time_of_prog;
 			break ;
-		}
 	}
+	philo->last_bite = philo->data->start_time_of_prog;
 	if (philo->id % 2 == 0)
 	{
 		announcement_to_screen(philo->data, philo, "is thinking");
-		usleep(1000);	
+		usleep(1000);
 	}
 	while (!philo->data->stop_prog)
 	{
 		eat_cleanly(philo);
 		sleep_soundly(philo);
 		think_boldly(philo);
+		usleep(100);
 	}
 	return (NULL);
 }
@@ -43,9 +43,9 @@ void	*philo_prog(void *arg)
 void	eat_cleanly(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
-	announcement_to_screen(philo->data, philo, "has taken L fork");
+	announcement_to_screen(philo->data, philo, "has taken a fork");
 	pthread_mutex_lock(philo->right_fork);
-	announcement_to_screen(philo->data, philo, "has taken R fork");
+	announcement_to_screen(philo->data, philo, "has taken a fork");
 	pthread_mutex_lock(&philo->personal_bodyguard);
 	philo->is_eating = 1;
 	announcement_to_screen(philo->data, philo, "is eating");
@@ -69,5 +69,5 @@ void	sleep_soundly(t_philo *philo)
 void	think_boldly(t_philo *philo)
 {
 	announcement_to_screen(philo->data, philo, "is thinking");
-	usleep(1000);
+	usleep(500);
 }

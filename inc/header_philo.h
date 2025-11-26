@@ -5,13 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/11/11 16:09:57 by gita              #+#    #+#             */
-/*   Updated: 2025/11/25 22:13:27 by gita             ###   ########.fr       */
+/*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
+/*   Updated: 2025/11/26 18:47:01 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef HEADER_PHILOS_H
-# define HEADER_PHILOS_H
+#ifndef HEADER_PHILO_H
+# define HEADER_PHILO_H
 
 # include <limits.h>
 # include <stdio.h>
@@ -41,24 +41,19 @@ typedef struct s_data
 
 typedef struct s_philo
 {
-	// pthread_t		thread_no;
 	size_t			id;
 	int				is_eating;
 	size_t			meals_eaten;
 	uint64_t		last_bite;
-	// uint64_t		last_nap;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	personal_bodyguard;
 	t_data			*data;
 }	t_philo;
 
-
 int			validate_args(int ac, char **av);
 int			ft_atoi(char *str);
 void		ft_atoi_beginning(char *str, size_t *i, int *sign);
-int			print_msg_n_return_value(char *msg, int value);
-void		cleanup_data(t_data *data);
 
 int			register_data(int ac, char **av, t_data *supervisor);
 void		basic_data(int ac, char **av, t_data *data);
@@ -67,15 +62,18 @@ int			init_threads(t_data *supervisor);
 int			join_threads(t_data *data, size_t quantity);
 
 void		*philo_prog(void *arg);
-void		think_deeply(t_philo *philo);
-
-void		*supervise_prog(void *arg);
-void		check_if_starved(t_data *data);
-void		check_if_all_full(t_data *data);
-
-uint64_t	simplified_time();
-void		announcement_to_screen(t_data *data, t_philo *philo, char *activity);
 void		eat_cleanly(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);
+
+void		*supervise_prog(void *arg);
+int			check_if_starved(t_data *data);
+int			check_if_all_full(t_data *data);
+
+int			print_err_n_return_value(char *msg, int value);
+void		cleanup_data(t_data *data);
+uint64_t	simplified_time(void);
+void		announcement_to_screen(t_data *data, t_philo *philo,
+				char *activity);
+
 #endif

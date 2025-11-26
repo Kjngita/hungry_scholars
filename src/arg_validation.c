@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/17 20:56:48 by gita              #+#    #+#             */
-/*   Updated: 2025/11/17 20:57:15 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/26 16:59:41 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	validate_args(int ac, char **av)
 	{
 		number = ft_atoi(av[i]);
 		if (number <= 0)
-			return (print_msg_n_return_value("Invalid argument", -1));
+			return (print_err_n_return_value("Invalid argument", -1));
 		i++;
 	}
 	return (0);
