@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/11/26 18:47:01 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/29 23:10:50 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 # include <string.h>
 # include <stdint.h>
 # include <sys/time.h>
+# include <stdatomic.h>
 
 typedef struct s_philo	t_philo;
 typedef struct s_data
@@ -35,8 +36,8 @@ typedef struct s_data
 	t_philo			*philo_queue;
 	pthread_mutex_t	*forks;
 	uint64_t		start_time_of_prog;
-	int				stop_prog;
-	pthread_mutex_t	data_protection;
+	atomic_int		stop_prog;
+	// pthread_mutex_t	data_protection;
 }	t_data;
 
 typedef struct s_philo
@@ -57,8 +58,10 @@ void		ft_atoi_beginning(char *str, size_t *i, int *sign);
 
 int			register_data(int ac, char **av, t_data *supervisor);
 void		basic_data(int ac, char **av, t_data *data);
+int			reserve_space_for_stuff(t_data *data);
 void		assign_forks(t_data *data, size_t i);
 int			init_threads(t_data *supervisor);
+int			lonely_philo(t_data *data);
 int			join_threads(t_data *data, size_t quantity);
 
 void		*philo_prog(void *arg);

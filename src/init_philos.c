@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:45:48 by gita              #+#    #+#             */
-/*   Updated: 2025/11/26 18:21:01 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/29 23:12:29 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,26 @@ int	init_threads(t_data *data)
 	pthread_t	supervisor;
 
 	i = 0;
-	while (i < data->head_count)
+	if (data->head_count == 1)
 	{
-		data->philo_queue[i].id = i + 1;
-		if (pthread_create(&data->philo_threads[i], NULL, &philo_prog,
-				&data->philo_queue[i]) != 0)
+		if (lonely_philo(data) == -1)
+			return (-1);
+	}
+	else
+	{
+		while (i < data->head_count)
 		{
-			pthread_mutex_lock(&data->data_protection);
-			data->stop_prog = 1;
-			pthread_mutex_unlock(&data->data_protection);
-			return (join_threads(data, i));
+			data->philo_queue[i].id = i + 1;
+			if (pthread_create(&data->philo_threads[i], NULL, &philo_prog,
+					&data->philo_queue[i]) != 0)
+			{
+				// pthread_mutex_lock(&data->data_protection);
+				data->stop_prog = 1;
+				// pthread_mutex_unlock(&data->data_protection);
+				return (join_threads(data, i));
+			}
+			i++;
 		}
-		i++;
 	}
 	data->start_time_of_prog = simplified_time();
 	if (pthread_create(&supervisor, NULL, &supervise_prog, data) != 0)
@@ -38,6 +46,18 @@ int	init_threads(t_data *data)
 		return (print_err_n_return_value("S-thread join failed", -1));
 	if (join_threads(data, data->head_count) == -1)
 		return (-1);
+	return (0);
+}
+
+int	lonely_philo(t_data *data)
+{
+	data->philo_queue[0].id = 1;
+	if (pthread_create(&data->philo_threads[0], NULL, &philo_prog,
+			&data->philo_queue[0]) != 0)
+	{
+		data->stop_prog = 1;
+		return (join_threads(data, 1));
+	}
 	return (0);
 }
 
@@ -69,17 +89,19 @@ void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 {
 	uint64_t	timestamp_in_millisec;
 
-	pthread_mutex_lock(&data->data_protection);
+	// pthread_mutex_lock(&data->data_protection);
 	if (activity == NULL)
 	{
 		data->stop_prog = 1;
 		timestamp_in_millisec = simplified_time() - data->start_time_of_prog;
-		printf("%lu %zu %s\n", timestamp_in_millisec, philo->id, "died");
+		printf("%lu %zu %s\n\n\n\n\n\n\n\n", timestamp_in_millisec, philo->id, "died");
 	}
-	if (!data->stop_prog)
+	else
 	{
+		if (data->stop_prog)
+			return ; 
 		timestamp_in_millisec = simplified_time() - data->start_time_of_prog;
 		printf("%lu %zu %s\n", timestamp_in_millisec, philo->id, activity);
 	}
-	pthread_mutex_unlock(&data->data_protection);
+	// pthread_mutex_unlock(&data->data_protection);
 }

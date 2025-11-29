@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/11/26 18:47:19 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/29 19:04:47 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	*philo_prog(void *arg)
 	if (philo->id % 2 == 0)
 	{
 		announcement_to_screen(philo->data, philo, "is thinking");
-		usleep(1000);
+		usleep(philo->data->hunger_endurance * 0.2 * 1000);
 	}
 	while (!philo->data->stop_prog)
 	{
@@ -68,6 +68,12 @@ void	sleep_soundly(t_philo *philo)
 
 void	think_boldly(t_philo *philo)
 {
-	announcement_to_screen(philo->data, philo, "is thinking");
-	usleep(500);
+	if (simplified_time() - philo->last_bite > philo->data->hunger_endurance - philo->data->time_to_sleep - philo->data->time_to_eat - 1000)
+		usleep(500);
+	// think_this_long = philo->data->hunger_endurance	- philo->data->time_to_sleep;
+	// announcement_to_screen(philo->data, philo, "is thinking");
+	// if (philo->id % 2 == 0)
+	// 	usleep(think_this_long * 0.5 * 1000);
+	// else
+	// 	usleep(think_this_long * 0.8 * 1000);
 }
