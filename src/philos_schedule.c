@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/11/29 19:04:47 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/30 18:56:04 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@ void	*philo_prog(void *arg)
 			break ;
 	}
 	philo->last_bite = philo->data->start_time_of_prog;
+	if (philo->data->head_count == 1)
+		return (lonely_philo(philo));
 	if (philo->id % 2 == 0)
 	{
 		announcement_to_screen(philo->data, philo, "is thinking");
@@ -37,6 +39,14 @@ void	*philo_prog(void *arg)
 		think_boldly(philo);
 		usleep(100);
 	}
+	return (NULL);
+}
+
+void	*lonely_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	announcement_to_screen(philo->data, philo, "has taken a fork");
+	check_if_starved(philo->data);
 	return (NULL);
 }
 
@@ -68,12 +78,14 @@ void	sleep_soundly(t_philo *philo)
 
 void	think_boldly(t_philo *philo)
 {
-	if (simplified_time() - philo->last_bite > philo->data->hunger_endurance - philo->data->time_to_sleep - philo->data->time_to_eat - 1000)
-		usleep(500);
-	// think_this_long = philo->data->hunger_endurance	- philo->data->time_to_sleep;
-	// announcement_to_screen(philo->data, philo, "is thinking");
-	// if (philo->id % 2 == 0)
-	// 	usleep(think_this_long * 0.5 * 1000);
-	// else
-	// 	usleep(think_this_long * 0.8 * 1000);
+	// if (simplified_time() - philo->last_bite > philo->data->hunger_endurance - philo->data->time_to_sleep - philo->data->time_to_eat - 1000)
+	// 	usleep(500);
+	uint64_t	think_this_long;
+
+	think_this_long = philo->data->hunger_endurance	- philo->data->time_to_sleep;
+	announcement_to_screen(philo->data, philo, "is thinking");
+	if (philo->id % 2 == 0)
+		usleep(think_this_long * 0.5 * 1000);
+	else
+		usleep(think_this_long * 0.8 * 1000);
 }

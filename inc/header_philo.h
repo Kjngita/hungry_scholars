@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/11/29 23:10:50 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/30 18:53:25 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <string.h>
 # include <stdint.h>
 # include <sys/time.h>
-# include <stdatomic.h>
+// # include <stdatomic.h>
 
 typedef struct s_philo	t_philo;
 typedef struct s_data
@@ -36,8 +36,8 @@ typedef struct s_data
 	t_philo			*philo_queue;
 	pthread_mutex_t	*forks;
 	uint64_t		start_time_of_prog;
-	atomic_int		stop_prog;
-	// pthread_mutex_t	data_protection;
+	int		stop_prog;
+	pthread_mutex_t	data_protection;
 }	t_data;
 
 typedef struct s_philo
@@ -61,10 +61,11 @@ void		basic_data(int ac, char **av, t_data *data);
 int			reserve_space_for_stuff(t_data *data);
 void		assign_forks(t_data *data, size_t i);
 int			init_threads(t_data *supervisor);
-int			lonely_philo(t_data *data);
+
 int			join_threads(t_data *data, size_t quantity);
 
 void		*philo_prog(void *arg);
+void		*lonely_philo(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);

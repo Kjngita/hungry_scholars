@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/11/29 22:56:46 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/30 15:56:06 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,6 @@ void	cleanup_data(t_data *data)
 		free (data->forks);
 		data->forks = NULL;
 	}
-	// pthread_mutex_destroy(&data->data_protection);
+	pthread_mutex_destroy(&data->data_protection);
 	
 }

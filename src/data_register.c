@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:34:43 by gita              #+#    #+#             */
-/*   Updated: 2025/11/29 22:25:43 by gita             ###   ########.fr       */
+/*   Updated: 2025/11/30 18:47:42 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ int	register_data(int ac, char **av, t_data *data)
 			return (print_err_n_return_value("Philo mutex init failed", -1));
 		i++;
 	}
-	// if (pthread_mutex_init(&data->data_protection, NULL) != 0)
-	// 	return (print_err_n_return_value("Data mutex init failed", -1));
+	if (pthread_mutex_init(&data->data_protection, NULL) != 0)
+		return (print_err_n_return_value("Data mutex init failed", -1));
 	return (0);
 }
 
@@ -77,4 +77,6 @@ void	assign_forks(t_data *data, size_t i)
 		else
 			data->philo_queue[i].right_fork = &data->forks[i + 1];
 	}
+	else
+		data->philo_queue[i].right_fork = NULL;
 }
