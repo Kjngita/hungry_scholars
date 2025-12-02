@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:34:43 by gita              #+#    #+#             */
-/*   Updated: 2025/11/30 18:47:42 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/02 23:42:24 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,21 @@ int	register_data(int ac, char **av, t_data *data)
 	basic_data(ac, av, data);
 	if (reserve_space_for_stuff(data) == -1)
 		return (-1);
+	if (pthread_mutex_init(&data->printer_access, NULL) != 0)
+		return (print_err_n_return_value("Print mutex init failed", -1));
+	if (pthread_mutex_init(&data->termination_access, NULL) != 0)
+		return (print_err_n_return_value("Stop mutex init failed", -1));
 	i = 0;
 	while (i < data->head_count)
 	{
 		memset(&data->philo_queue[i], 0, sizeof(t_philo));
+		data->philo_queue[i].id = i + 1;
 		data->philo_queue[i].data = data;
 		assign_forks(data, i);
-		if (pthread_mutex_init(&data->philo_queue[i].personal_bodyguard, NULL) != 0)
-			return (print_err_n_return_value("Philo mutex init failed", -1));
+		if (pthread_mutex_init(&data->philo_queue[i].meal_info_access, NULL))
+			return (print_err_n_return_value("Meal mutex init failed", -1));
 		i++;
 	}
-	if (pthread_mutex_init(&data->data_protection, NULL) != 0)
-		return (print_err_n_return_value("Data mutex init failed", -1));
 	return (0);
 }
 
@@ -41,7 +44,7 @@ void	basic_data(int ac, char **av, t_data *data)
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
 	if (ac == 6)
-		data->max_meals = ft_atoi(av[5]);
+		data->forced_meals = ft_atoi(av[5]);
 }
 
 int	reserve_space_for_stuff(t_data *data)
@@ -61,7 +64,10 @@ int	reserve_space_for_stuff(t_data *data)
 	while (i < data->head_count)
 	{
 		if (pthread_mutex_init(&data->forks[i], NULL) != 0)
-			return (print_err_n_return_value("Fork pthread init failed", -1));
+		{
+			dump_forks(&data, i);
+			return (print_err_n_return_value("Fork mutexes init failed", -1));
+		}
 		i++;
 	}
 	return (0);
@@ -77,6 +83,4 @@ void	assign_forks(t_data *data, size_t i)
 		else
 			data->philo_queue[i].right_fork = &data->forks[i + 1];
 	}
-	else
-		data->philo_queue[i].right_fork = NULL;
 }

@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/11/30 18:56:04 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/02 23:41:31 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,35 +19,45 @@ void	*philo_prog(void *arg)
 	philo = (t_philo *)arg;
 	while (1)
 	{
-		if (philo->data->stop_prog)
+		if (check_if_stopped(philo->data) == 1)
 			return (NULL);
 		if (philo->data->start_time_of_prog)
 			break ;
 	}
 	philo->last_bite = philo->data->start_time_of_prog;
 	if (philo->data->head_count == 1)
-		return (lonely_philo(philo));
+	{
+		lonely_philo(philo);
+		return (NULL);
+	}
 	if (philo->id % 2 == 0)
 	{
 		announcement_to_screen(philo->data, philo, "is thinking");
 		usleep(philo->data->hunger_endurance * 0.2 * 1000);
 	}
-	while (!philo->data->stop_prog)
+	while (1)
 	{
+		if (check_if_stopped(philo->data) == 1)
+			break ;
 		eat_cleanly(philo);
+		if (check_if_stopped(philo->data) == 1)
+			break ;
 		sleep_soundly(philo);
+		if (check_if_stopped(philo->data) == 1)
+			break ;
 		think_boldly(philo);
 		usleep(100);
 	}
 	return (NULL);
 }
 
-void	*lonely_philo(t_philo *philo)
+void	lonely_philo(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
 	announcement_to_screen(philo->data, philo, "has taken a fork");
+	usleep(philo->data->hunger_endurance * 1000);
+	pthread_mutex_unlock(philo->left_fork);
 	check_if_starved(philo->data);
-	return (NULL);
 }
 
 void	eat_cleanly(t_philo *philo)
@@ -56,36 +66,42 @@ void	eat_cleanly(t_philo *philo)
 	announcement_to_screen(philo->data, philo, "has taken a fork");
 	pthread_mutex_lock(philo->right_fork);
 	announcement_to_screen(philo->data, philo, "has taken a fork");
-	pthread_mutex_lock(&philo->personal_bodyguard);
 	philo->is_eating = 1;
 	announcement_to_screen(philo->data, philo, "is eating");
-	pthread_mutex_unlock(&philo->personal_bodyguard);
 	usleep(philo->data->time_to_eat * 1000);
-	pthread_mutex_lock(&philo->personal_bodyguard);
+	pthread_mutex_lock(&philo->meal_info_access);
 	philo->meals_eaten++;
-	philo->last_bite = simplified_time();
+	philo->last_bite = simplified_time(); //possible to change both??
+	pthread_mutex_unlock(&philo->meal_info_access);
 	philo->is_eating = 0;
-	pthread_mutex_unlock(&philo->personal_bodyguard);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
 }
 
 void	sleep_soundly(t_philo *philo)
 {
+	uint64_t	start_nap;
+
 	announcement_to_screen(philo->data, philo, "is sleeping");
-	usleep(philo->data->time_to_sleep * 1000);
+	start_nap = simplified_time();
+	while (simplified_time() - start_nap < philo->data->time_to_sleep)
+	{
+		if (check_if_stopped(philo->data) == 1)
+			break ;
+		usleep(500);
+	}
 }
 
 void	think_boldly(t_philo *philo)
 {
-	// if (simplified_time() - philo->last_bite > philo->data->hunger_endurance - philo->data->time_to_sleep - philo->data->time_to_eat - 1000)
-	// 	usleep(500);
-	uint64_t	think_this_long;
+	uint64_t	max_thinking;
+	uint64_t	start_think;
 
-	think_this_long = philo->data->hunger_endurance	- philo->data->time_to_sleep;
+	start_think = simplified_time();
+	max_thinking = philo->data->hunger_endurance
+						- philo->data->time_to_sleep
+						- philo->data->time_to_eat;
 	announcement_to_screen(philo->data, philo, "is thinking");
-	if (philo->id % 2 == 0)
-		usleep(think_this_long * 0.5 * 1000);
-	else
-		usleep(think_this_long * 0.8 * 1000);
+	if (simplified_time() - start_think > max_thinking - 1000) //check this
+		usleep(500);
 }
