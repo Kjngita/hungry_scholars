@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:45:48 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 22:58:17 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/03 21:48:54 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 		}
 		i++;
 	}
-	data->start_time_of_prog = simplified_time();
 	if (pthread_create(supervisor, NULL, &supervise_prog, data) != 0)
 	{
 		supervisor_creation_fail(data);
@@ -86,26 +85,19 @@ void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 {
 	uint64_t	timestamp_in_milsec;
 
-	timestamp_in_milsec = simplified_time() - data->start_time_of_prog;
 	if (activity == NULL)
 	{
-		// pthread_mutex_lock(&data->termination_access);
-		// data->terminate_prog = 1;
-		// pthread_mutex_unlock(&data->termination_access);
 		pthread_mutex_lock(&data->printer_access);
+		timestamp_in_milsec = simplified_time() - data->start_time_of_prog;
 		printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, "died");
 		pthread_mutex_unlock(&data->printer_access);
 	}
 	else
 	{
-		pthread_mutex_lock(&data->termination_access);
-		if (data->terminate_prog)
-		{
-			pthread_mutex_unlock(&data->termination_access);
+		if (check_if_stopped(data) == 1)
 			return ;
-		}
-		pthread_mutex_unlock(&data->termination_access);
 		pthread_mutex_lock(&data->printer_access);
+		timestamp_in_milsec = simplified_time() - data->start_time_of_prog;
 		printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, activity);
 		pthread_mutex_unlock(&data->printer_access);
 	}

@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 23:12:33 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/03 20:55:57 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,12 @@ typedef struct s_data
 typedef struct s_philo
 {
 	size_t			id;
-	_Atomic int		is_eating;
+	int				is_eating;
 	size_t			meals_eaten;
 	uint64_t		last_bite;
 	pthread_mutex_t	meal_info_access;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	// pthread_mutex_t	personal_bodyguard;
 	t_data			*data;
 }	t_philo;
 
@@ -69,6 +68,7 @@ void		supervisor_creation_fail(t_data *data);
 void		*philo_prog(void *arg);
 void		lonely_philo(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
+void		claim_forks(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);
 

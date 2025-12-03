@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:34:43 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 23:42:24 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/03 18:33:30 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,14 @@ int	register_data(int ac, char **av, t_data *data)
 		return (print_err_n_return_value("Print mutex init failed", -1));
 	if (pthread_mutex_init(&data->termination_access, NULL) != 0)
 		return (print_err_n_return_value("Stop mutex init failed", -1));
+	data->start_time_of_prog = simplified_time();
 	i = 0;
 	while (i < data->head_count)
 	{
 		memset(&data->philo_queue[i], 0, sizeof(t_philo));
 		data->philo_queue[i].id = i + 1;
 		data->philo_queue[i].data = data;
+		data->philo_queue[i].last_bite = data->start_time_of_prog;
 		assign_forks(data, i);
 		if (pthread_mutex_init(&data->philo_queue[i].meal_info_access, NULL))
 			return (print_err_n_return_value("Meal mutex init failed", -1));

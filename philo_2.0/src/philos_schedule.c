@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 23:41:31 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/03 18:50:22 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,6 @@ void	*philo_prog(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (1)
-	{
-		if (check_if_stopped(philo->data) == 1)
-			return (NULL);
-		if (philo->data->start_time_of_prog)
-			break ;
-	}
-	philo->last_bite = philo->data->start_time_of_prog;
 	if (philo->data->head_count == 1)
 	{
 		lonely_philo(philo);
@@ -62,21 +54,42 @@ void	lonely_philo(t_philo *philo)
 
 void	eat_cleanly(t_philo *philo)
 {
+	// claim_forks(philo);
 	pthread_mutex_lock(philo->left_fork);
-	announcement_to_screen(philo->data, philo, "has taken a fork");
-	pthread_mutex_lock(philo->right_fork);
-	announcement_to_screen(philo->data, philo, "has taken a fork");
+		announcement_to_screen(philo->data, philo, "has taken a fork");
+		pthread_mutex_lock(philo->right_fork);
+		announcement_to_screen(philo->data, philo, "has taken a fork");
+	pthread_mutex_lock(&philo->meal_info_access);
 	philo->is_eating = 1;
+	pthread_mutex_unlock(&philo->meal_info_access);
 	announcement_to_screen(philo->data, philo, "is eating");
 	usleep(philo->data->time_to_eat * 1000);
 	pthread_mutex_lock(&philo->meal_info_access);
 	philo->meals_eaten++;
-	philo->last_bite = simplified_time(); //possible to change both??
-	pthread_mutex_unlock(&philo->meal_info_access);
+	philo->last_bite = simplified_time();
 	philo->is_eating = 0;
+	pthread_mutex_unlock(&philo->meal_info_access);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
 }
+
+// void	claim_forks(t_philo *philo)
+// {
+// 	if (philo->id % 2 != 0)
+// 	{
+// 		pthread_mutex_lock(philo->left_fork);
+// 		announcement_to_screen(philo->data, philo, "has taken a fork");
+// 		pthread_mutex_lock(philo->right_fork);
+// 		announcement_to_screen(philo->data, philo, "has taken a fork");
+// 	}
+// 	else
+// 	{
+// 		pthread_mutex_lock(philo->right_fork);
+// 		announcement_to_screen(philo->data, philo, "has taken a fork");
+// 		pthread_mutex_lock(philo->left_fork);
+// 		announcement_to_screen(philo->data, philo, "has taken a fork");
+// 	}
+// }
 
 void	sleep_soundly(t_philo *philo)
 {
