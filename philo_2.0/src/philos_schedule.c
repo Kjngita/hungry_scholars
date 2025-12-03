@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/03 18:50:22 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/03 22:00:50 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,9 @@ void	eat_cleanly(t_philo *philo)
 {
 	// claim_forks(philo);
 	pthread_mutex_lock(philo->left_fork);
-		announcement_to_screen(philo->data, philo, "has taken a fork");
-		pthread_mutex_lock(philo->right_fork);
-		announcement_to_screen(philo->data, philo, "has taken a fork");
+	announcement_to_screen(philo->data, philo, "has taken a fork");
+	pthread_mutex_lock(philo->right_fork);
+	announcement_to_screen(philo->data, philo, "has taken a fork");
 	pthread_mutex_lock(&philo->meal_info_access);
 	philo->is_eating = 1;
 	pthread_mutex_unlock(&philo->meal_info_access);
