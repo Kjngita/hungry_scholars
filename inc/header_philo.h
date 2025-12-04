@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 20:50:26 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/04 22:36:19 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 # include <string.h>
 # include <stdint.h>
 # include <sys/time.h>
-# include <stdatomic.h>
 
 typedef struct s_philo	t_philo;
 typedef struct s_data
@@ -30,25 +29,26 @@ typedef struct s_data
 	uint64_t		hunger_endurance;
 	uint64_t		time_to_eat;
 	uint64_t		time_to_sleep;
-	size_t			min_meals;
-	// size_t			happy_philos;
+	size_t			forced_meals;
 	pthread_t		*philo_threads;
 	t_philo			*philo_queue;
-	pthread_mutex_t	*forks;
 	uint64_t		start_time_of_prog;
-	int				stop_prog;
-	pthread_mutex_t	data_protection;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	printer_access;
+	pthread_mutex_t	termination_access;
+	int				terminate_prog;
+	
 }	t_data;
 
 typedef struct s_philo
 {
 	size_t			id;
-	atomic_int		is_eating;
-	atomic_int		meals_eaten;
-	atomic_ulong	last_bite;
+	int				is_eating;
+	size_t			meals_eaten;
+	uint64_t		last_bite;
+	pthread_mutex_t	meal_info_access;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	// pthread_mutex_t	personal_bodyguard;
 	t_data			*data;
 }	t_philo;
 
@@ -60,22 +60,27 @@ int			register_data(int ac, char **av, t_data *supervisor);
 void		basic_data(int ac, char **av, t_data *data);
 int			reserve_space_for_stuff(t_data *data);
 void		assign_forks(t_data *data, size_t i);
-int			init_threads(t_data *supervisor);
 
+int			init_threads(t_data *data, pthread_t *supervisor);
 int			join_threads(t_data *data, size_t quantity);
+void		supervisor_creation_fail(t_data *data);
 
 void		*philo_prog(void *arg);
 void		lonely_philo(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
+void		claim_forks(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);
 
 void		*supervise_prog(void *arg);
+int			check_if_stopped(t_data *data);
 int			check_if_starved(t_data *data);
+void		death_notice(t_philo *philo);
 int			check_if_all_full(t_data *data);
 
 int			print_err_n_return_value(char *msg, int value);
 void		cleanup_data(t_data *data);
+void		dump_forks(t_data **data, size_t quantity);
 uint64_t	simplified_time(void);
 void		announcement_to_screen(t_data *data, t_philo *philo,
 				char *activity);

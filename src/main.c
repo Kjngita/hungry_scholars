@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/12/02 23:42:01 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/04 22:39:53 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ int	print_err_n_return_value(char *msg, int value)
 
 void	cleanup_data(t_data *data)
 {
-	// size_t	i;
-
 	if (!data)
 		return ;
 	if (data->philo_threads)
@@ -60,12 +58,6 @@ void	cleanup_data(t_data *data)
 	}
 	if (data->philo_queue)
 	{
-		// i = 0;
-		// while (i < data->head_count)
-		// {
-		// 	pthread_mutex_destroy(&data->philo_queue[i].personal_bodyguard);
-		// 	i++;
-		// }
 		free (data->philo_queue);
 		data->philo_queue = NULL;
 	}

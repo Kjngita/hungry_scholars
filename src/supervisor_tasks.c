@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:02:33 by gita              #+#    #+#             */
-/*   Updated: 2025/12/03 22:31:10 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/04 22:02:59 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,27 +44,37 @@ int	check_if_starved(t_data *data)
 {
 	size_t		i;
 	uint64_t	last_bite;
-	int			eating;
+	// int			eating;
 	
 	i = 0;
 	while (i < data->head_count)
 	{
 		pthread_mutex_lock(&data->philo_queue[i].meal_info_access);
 		last_bite = data->philo_queue[i].last_bite;
-		eating = data->philo_queue[i].is_eating;
+		// eating = data->philo_queue[i].is_eating;
 		pthread_mutex_unlock(&data->philo_queue[i].meal_info_access);
-		if (!eating && (data->hunger_endurance < simplified_time() - last_bite))
+		if (data->hunger_endurance < simplified_time() - last_bite)
 		{
 			pthread_mutex_lock(&data->termination_access);
 			data->terminate_prog = 1;
 			pthread_mutex_unlock(&data->termination_access);
-			announcement_to_screen(data, &data->philo_queue[i], NULL);
+			death_notice(&data->philo_queue[i]);
 			return (1);
 		}
 		i++;
 		usleep (100);
 	}
 	return (0);
+}
+
+void	death_notice(t_philo *philo)
+{
+	uint64_t	timestamp_in_milsec;
+
+	pthread_mutex_lock(&philo->data->printer_access);
+	timestamp_in_milsec = simplified_time() - philo->data->start_time_of_prog;
+	printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, "died");
+	pthread_mutex_unlock(&philo->data->printer_access);
 }
 
 int	check_if_all_full(t_data *data)
