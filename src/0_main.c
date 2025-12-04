@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   0_main.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 22:39:53 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 00:07:09 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,56 +29,24 @@ int	main(int ac, char **av)
 	}
 	if (init_threads(&data, &supervisor) == -1)
 	{
+		dump_meal_mutex(&data, data.head_count);
 		cleanup_data(&data);
 		return (1);
 	}
-	if (pthread_join(supervisor, NULL) != 0)
-		return (print_err_n_return_value("S-thread join failed", -1));
-	if (join_threads(&data, data.head_count) == -1)
-		return (-1);
+	if (merge_threads_back(&data, &supervisor) == -1)
+		return (1);
 	cleanup_data(&data);
 	return (0);
 }
 
-int	print_err_n_return_value(char *msg, int value)
+int	merge_threads_back(t_data *data, pthread_t *supervisor)
 {
-	if (msg)
-		printf("%s\n", msg);
-	return (value);
+	if (pthread_join(*supervisor, NULL) != 0)
+		return (print_err_n_return_value("S-thread join failed", -1));
+	if (join_threads(data, data->head_count) == -1)
+		return (-1);
+	if (dump_meal_mutex(data, data->head_count) == -1)
+		return (-1);
+	return (0);
 }
 
-void	cleanup_data(t_data *data)
-{
-	if (!data)
-		return ;
-	if (data->philo_threads)
-	{
-		free (data->philo_threads);
-		data->philo_threads = NULL;
-	}
-	if (data->philo_queue)
-	{
-		free (data->philo_queue);
-		data->philo_queue = NULL;
-	}
-	if (data->forks)
-	{
-		dump_forks(&data, data->head_count);
-	}
-	pthread_mutex_destroy(&data->printer_access);
-	pthread_mutex_destroy(&data->termination_access);
-}
-
-void	dump_forks(t_data **data, size_t quantity)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < quantity)
-	{
-		pthread_mutex_destroy(&(*data)->forks[i]);
-		i++;
-	}
-	free ((*data)->forks);
-	(*data)->forks = NULL;
-}

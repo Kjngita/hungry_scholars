@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   data_register.c                                    :+:      :+:    :+:   */
+/*   2_data_register.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:34:43 by gita              #+#    #+#             */
-/*   Updated: 2025/12/03 18:33:30 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/04 23:53:51 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	register_data(int ac, char **av, t_data *data)
 		data->philo_queue[i].last_bite = data->start_time_of_prog;
 		assign_forks(data, i);
 		if (pthread_mutex_init(&data->philo_queue[i].meal_info_access, NULL))
-			return (print_err_n_return_value("Meal mutex init failed", -1));
+			return (dump_meal_mutex(data, i));
 		i++;
 	}
 	return (0);
@@ -85,4 +85,12 @@ void	assign_forks(t_data *data, size_t i)
 		else
 			data->philo_queue[i].right_fork = &data->forks[i + 1];
 	}
+}
+
+uint64_t	simplified_time(void)
+{
+	struct timeval	this_moment;
+
+	gettimeofday(&this_moment, NULL);
+	return (((this_moment.tv_sec * 1000) + (this_moment.tv_usec / 1000)));
 }

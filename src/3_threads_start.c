@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   threads_start.c                                    :+:      :+:    :+:   */
+/*   3_threads_start.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:45:48 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 22:35:13 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 00:15:42 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 	
 	i = 0;
 	while (i < data->head_count)
-	{		
+	{
 		if (pthread_create(&data->philo_threads[i], NULL, &philo_prog,
 				&data->philo_queue[i]) != 0)
 		{
@@ -29,6 +29,7 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 		}
 		i++;
 	}
+	// data->can_go = 1;
 	if (pthread_create(supervisor, NULL, &supervise_prog, data) != 0)
 	{
 		join_threads(data, data->head_count);
@@ -72,14 +73,6 @@ void	supervisor_creation_fail(t_data *data)
 	pthread_mutex_lock(&data->printer_access);
 	printf("S-thread creation failed");
 	pthread_mutex_unlock(&data->printer_access);
-}
-
-uint64_t	simplified_time(void)
-{
-	struct timeval	this_moment;
-
-	gettimeofday(&this_moment, NULL);
-	return (((this_moment.tv_sec * 1000) + (this_moment.tv_usec / 1000)));
 }
 
 void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)

@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 22:36:19 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 00:15:45 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_data
 	pthread_mutex_t	printer_access;
 	pthread_mutex_t	termination_access;
 	int				terminate_prog;
-	
+	// int				can_go;
 }	t_data;
 
 typedef struct s_philo
@@ -60,10 +60,13 @@ int			register_data(int ac, char **av, t_data *supervisor);
 void		basic_data(int ac, char **av, t_data *data);
 int			reserve_space_for_stuff(t_data *data);
 void		assign_forks(t_data *data, size_t i);
+uint64_t	simplified_time(void);
 
 int			init_threads(t_data *data, pthread_t *supervisor);
 int			join_threads(t_data *data, size_t quantity);
 void		supervisor_creation_fail(t_data *data);
+void		announcement_to_screen(t_data *data, t_philo *philo,
+				char *activity);
 
 void		*philo_prog(void *arg);
 void		lonely_philo(t_philo *philo);
@@ -78,11 +81,10 @@ int			check_if_starved(t_data *data);
 void		death_notice(t_philo *philo);
 int			check_if_all_full(t_data *data);
 
+int			merge_threads_back(t_data *data, pthread_t *supervisor);
 int			print_err_n_return_value(char *msg, int value);
 void		cleanup_data(t_data *data);
 void		dump_forks(t_data **data, size_t quantity);
-uint64_t	simplified_time(void);
-void		announcement_to_screen(t_data *data, t_philo *philo,
-				char *activity);
+int			dump_meal_mutex(t_data *data, size_t quantity);
 
 #endif

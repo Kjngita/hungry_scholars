@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philos_schedule.c                                  :+:      :+:    :+:   */
+/*   4_philos_schedule.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 22:35:07 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 00:16:06 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@ void	*philo_prog(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
+	// while (1)
+	// {
+	// 	if (philo->data->can_go == 1)
+	// 		break ;
+	// 	if (check_if_stopped(philo->data) == 1)
+	// 		return (NULL);
+	// }
 	if (philo->data->head_count == 1)
 	{
 		lonely_philo(philo);
@@ -45,7 +52,7 @@ void	lonely_philo(t_philo *philo)
 	announcement_to_screen(philo->data, philo, "has taken a fork");
 	usleep(philo->data->hunger_endurance * 1000);
 	pthread_mutex_unlock(philo->left_fork);
-	check_if_starved(philo->data);
+	// check_if_starved(philo->data);
 }
 
 void	eat_cleanly(t_philo *philo)

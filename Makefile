@@ -4,13 +4,13 @@ FLAGS = -Wall -Wextra -Werror -pthread -g
 HEADER = inc/header_philo.h
 
 S_DIR = src
-CFILES = $(S_DIR)/main.c \
-	$(S_DIR)/arg_validation.c \
-	$(S_DIR)/data_register.c \
-	$(S_DIR)/threads_start.c \
-	$(S_DIR)/philos_schedule.c \
-	$(S_DIR)/supervisor_tasks.c
-
+CFILES = $(S_DIR)/0_main.c \
+	$(S_DIR)/1_arg_validation.c \
+	$(S_DIR)/2_data_register.c \
+	$(S_DIR)/3_threads_start.c \
+	$(S_DIR)/4_philos_schedule.c \
+	$(S_DIR)/4_supervisor_tasks.c \
+	$(S_DIR)/5_wipeout.c
 
 O_DIR = objdir
 OFILES = $(CFILES:$(S_DIR)/%.c=$(O_DIR)/%.o)  #$(addprefix $(O_DIR)/,$(CFILES:.c=.o))
