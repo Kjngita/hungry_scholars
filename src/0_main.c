@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 00:07:09 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 17:59:29 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,3 @@ int	merge_threads_back(t_data *data, pthread_t *supervisor)
 		return (-1);
 	return (0);
 }
-

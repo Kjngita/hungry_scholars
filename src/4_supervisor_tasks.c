@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:02:33 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 23:05:32 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 18:00:32 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,14 +44,12 @@ int	check_if_starved(t_data *data)
 {
 	size_t		i;
 	uint64_t	last_bite;
-	// int			eating;
-	
+
 	i = 0;
 	while (i < data->head_count)
 	{
 		pthread_mutex_lock(&data->philo_queue[i].meal_info_access);
 		last_bite = data->philo_queue[i].last_bite;
-		// eating = data->philo_queue[i].is_eating;
 		pthread_mutex_unlock(&data->philo_queue[i].meal_info_access);
 		if (data->hunger_endurance < simplified_time() - last_bite)
 		{

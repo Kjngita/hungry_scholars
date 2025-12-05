@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:34:43 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 23:53:51 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 17:55:47 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	register_data(int ac, char **av, t_data *data)
 	if (pthread_mutex_init(&data->termination_access, NULL) != 0)
 		return (print_err_n_return_value("Stop mutex init failed", -1));
 	data->start_time_of_prog = simplified_time();
+	data->terminate_prog = -1;
 	i = 0;
 	while (i < data->head_count)
 	{

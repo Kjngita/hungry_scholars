@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 00:15:45 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 18:02:29 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ typedef struct s_data
 	pthread_mutex_t	printer_access;
 	pthread_mutex_t	termination_access;
 	int				terminate_prog;
-	// int				can_go;
 }	t_data;
 
 typedef struct s_philo
@@ -71,7 +70,6 @@ void		announcement_to_screen(t_data *data, t_philo *philo,
 void		*philo_prog(void *arg);
 void		lonely_philo(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
-void		claim_forks(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);
 

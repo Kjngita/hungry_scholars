@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 23:05:21 by gita              #+#    #+#             */
-/*   Updated: 2025/12/04 23:55:21 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/05 18:00:45 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	print_err_n_return_value(char *msg, int value)
 
 int	dump_meal_mutex(t_data *data, size_t quantity)
 {
-	size_t i;
+	size_t	i;
 
 	i = 0;
 	if (!data || !data->philo_queue)

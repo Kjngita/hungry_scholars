@@ -13,7 +13,7 @@ CFILES = $(S_DIR)/0_main.c \
 	$(S_DIR)/5_wipeout.c
 
 O_DIR = objdir
-OFILES = $(CFILES:$(S_DIR)/%.c=$(O_DIR)/%.o)  #$(addprefix $(O_DIR)/,$(CFILES:.c=.o))
+OFILES = $(CFILES:$(S_DIR)/%.c=$(O_DIR)/%.o)
 
 all: $(NAME)
 
