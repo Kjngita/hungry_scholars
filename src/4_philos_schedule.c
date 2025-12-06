@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 16:25:38 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 18:30:43 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,16 +81,10 @@ void	eat_cleanly(t_philo *philo)
 
 void	sleep_soundly(t_philo *philo)
 {
-	uint64_t	start_nap;
-
+	if (check_if_stopped(philo->data) == 1)
+		return ;
 	announcement_to_screen(philo->data, philo, "is sleeping");
-	start_nap = simplified_time();
-	while (simplified_time() - start_nap < philo->data->time_to_sleep)
-	{
-		if (check_if_stopped(philo->data) == 1)
-			break ;
-		usleep(500);
-	}
+	usleep(philo->data->time_to_sleep * 1000);
 }
 
 void	think_boldly(t_philo *philo)
@@ -98,9 +92,11 @@ void	think_boldly(t_philo *philo)
 	uint64_t	max_thinking;
 	uint64_t	start_think;
 
+	if (check_if_stopped(philo->data) == 1)
+		return ;
 	max_thinking = philo->data->hunger_endurance - philo->data->time_to_sleep
 		- philo->data->time_to_eat;
-	if (max_thinking > 1000)
+	if (max_thinking > 2)
 		announcement_to_screen(philo->data, philo, "is thinking");
 	start_think = simplified_time();
 	while (simplified_time() - start_think < max_thinking / 2)
