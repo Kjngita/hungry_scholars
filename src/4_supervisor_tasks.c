@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:02:33 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 16:25:02 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 19:27:46 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,11 @@ int	check_if_starved(t_data *data)
 	i = 0;
 	while (i < data->head_count)
 	{
+		if (check_if_stopped(data) == 2)
+		{
+			death_notice(data, data->dead_philo_id);
+			return (1);
+		}
 		pthread_mutex_lock(&data->philo_queue[i].meal_info_access);
 		last_bite = data->philo_queue[i].last_bite;
 		pthread_mutex_unlock(&data->philo_queue[i].meal_info_access);
@@ -56,11 +61,10 @@ int	check_if_starved(t_data *data)
 			pthread_mutex_lock(&data->termination_access);
 			data->terminate_prog = 1;
 			pthread_mutex_unlock(&data->termination_access);
-			death_notice(&data->philo_queue[i]);
+			death_notice(data, data->philo_queue[i].id);
 			return (1);
 		}
 		i++;
-		usleep (100);
 	}
 	return (0);
 }

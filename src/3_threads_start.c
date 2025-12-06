@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:45:48 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 16:10:40 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 19:43:29 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,15 @@ void	supervisor_creation_fail(t_data *data)
 	pthread_mutex_lock(&data->printer_access);
 	printf("S-thread creation failed");
 	pthread_mutex_unlock(&data->printer_access);
+}
+
+int	wait_all_threads(t_data *data)
+{
+	while (1)
+	{
+		if (check_if_stopped(data) == 0)
+			return (0);
+		if (check_if_stopped(data) == 1)
+			return (1);
+	}
 }

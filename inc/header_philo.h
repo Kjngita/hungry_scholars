@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 16:24:41 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 19:51:10 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,12 +37,12 @@ typedef struct s_data
 	pthread_mutex_t	printer_access;
 	pthread_mutex_t	termination_access;
 	int				terminate_prog;
+	size_t			dead_philo_id;
 }	t_data;
 
 typedef struct s_philo
 {
 	size_t			id;
-	int				is_eating;
 	size_t			meals_eaten;
 	uint64_t		last_bite;
 	pthread_mutex_t	meal_info_access;
@@ -70,14 +70,16 @@ void		announcement_to_screen(t_data *data, t_philo *philo,
 void		*philo_prog(void *arg);
 int			wait_all_threads(t_data *data);
 void		lonely_philo(t_philo *philo);
+void		claim_forks(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
+int			self_checkup(t_philo *philo);
 void		sleep_soundly(t_philo *philo);
 void		think_boldly(t_philo *philo);
 
 void		*supervise_prog(void *arg);
 int			check_if_stopped(t_data *data);
 int			check_if_starved(t_data *data);
-void		death_notice(t_philo *philo);
+void		death_notice(t_data *data, size_t dead_philo_id);
 int			check_if_all_full(t_data *data);
 
 int			wait_threads_to_finish(t_data *data, pthread_t *supervisor);

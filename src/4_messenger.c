@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 16:10:27 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 16:11:31 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/08 18:49:56 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 	uint64_t	timestamp_in_milsec;
 
 	pthread_mutex_lock(&data->termination_access);
-	if (data->terminate_prog == 1)
+	if (data->terminate_prog > 0)
 	{
 		pthread_mutex_unlock(&data->termination_access);
 		return ;
@@ -42,14 +42,14 @@ void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 - Get the timestamp of the current printing action and print death info
 - Release the mutex for printing
 */
-void	death_notice(t_philo *philo)
+void	death_notice(t_data *data, size_t dead_philo_id)
 {
 	uint64_t	timestamp_in_milsec;
 
-	pthread_mutex_lock(&philo->data->printer_access);
-	timestamp_in_milsec = simplified_time() - philo->data->start_time_of_prog;
-	printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, "died");
-	pthread_mutex_unlock(&philo->data->printer_access);
+	pthread_mutex_lock(&data->printer_access);
+	timestamp_in_milsec = simplified_time() - data->start_time_of_prog;
+	printf("%lu %zu %s\n", timestamp_in_milsec, dead_philo_id, "died");
+	pthread_mutex_unlock(&data->printer_access);
 }
 
 /*
