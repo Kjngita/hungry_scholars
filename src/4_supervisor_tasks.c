@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:02:33 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 18:00:32 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 16:25:02 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,16 +63,6 @@ int	check_if_starved(t_data *data)
 		usleep (100);
 	}
 	return (0);
-}
-
-void	death_notice(t_philo *philo)
-{
-	uint64_t	timestamp_in_milsec;
-
-	pthread_mutex_lock(&philo->data->printer_access);
-	timestamp_in_milsec = simplified_time() - philo->data->start_time_of_prog;
-	printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, "died");
-	pthread_mutex_unlock(&philo->data->printer_access);
 }
 
 int	check_if_all_full(t_data *data)

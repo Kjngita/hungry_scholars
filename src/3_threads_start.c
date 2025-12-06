@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/10 18:45:48 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 17:59:50 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 16:10:40 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,5 @@ void	supervisor_creation_fail(t_data *data)
 	pthread_mutex_unlock(&data->termination_access);
 	pthread_mutex_lock(&data->printer_access);
 	printf("S-thread creation failed");
-	pthread_mutex_unlock(&data->printer_access);
-}
-
-void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
-{
-	uint64_t	timestamp_in_milsec;
-
-	pthread_mutex_lock(&data->termination_access);
-	if (data->terminate_prog == 1)
-	{
-		pthread_mutex_unlock(&data->termination_access);
-		return ;
-	}
-	pthread_mutex_unlock(&data->termination_access);
-	pthread_mutex_lock(&data->printer_access);
-	timestamp_in_milsec = simplified_time() - data->start_time_of_prog;
-	printf("%lu %zu %s\n", timestamp_in_milsec, philo->id, activity);
 	pthread_mutex_unlock(&data->printer_access);
 }

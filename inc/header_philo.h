@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 17:38:58 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 18:02:29 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 16:24:41 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void		announcement_to_screen(t_data *data, t_philo *philo,
 				char *activity);
 
 void		*philo_prog(void *arg);
+int			wait_all_threads(t_data *data);
 void		lonely_philo(t_philo *philo);
 void		eat_cleanly(t_philo *philo);
 void		sleep_soundly(t_philo *philo);

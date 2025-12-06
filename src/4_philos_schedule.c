@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 18:04:14 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/06 16:25:38 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,8 @@ void	*philo_prog(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	while (1)
-	{
-		if (check_if_stopped(philo->data) == 0)
-			break ;
-		if (check_if_stopped(philo->data) == 1)
-			return (NULL);
-	}
+	if (wait_all_threads(philo->data) == 1)
+		return (NULL);
 	if (philo->data->head_count == 1)
 	{
 		lonely_philo(philo);
@@ -45,16 +40,19 @@ void	*philo_prog(void *arg)
 	return (NULL);
 }
 
-void	lonely_philo(t_philo *philo)
+int	wait_all_threads(t_data *data)
 {
-	pthread_mutex_lock(philo->left_fork);
-	announcement_to_screen(philo->data, philo, "has taken a fork");
-	usleep(philo->data->hunger_endurance * 1000);
-	pthread_mutex_unlock(philo->left_fork);
+	while (1)
+	{
+		if (check_if_stopped(data) == 0)
+			return (0);
+		if (check_if_stopped(data) == 1)
+			return (1);
+	}
 }
 
 void	eat_cleanly(t_philo *philo)
-{	
+{
 	if (philo->id % 2 != 0)
 	{
 		pthread_mutex_lock(philo->left_fork);
