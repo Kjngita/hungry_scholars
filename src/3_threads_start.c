@@ -12,6 +12,15 @@
 
 #include "header_philo.h"
 
+/*
+- Create all the philo threads that will perform tasks in philo_prog(). If fail
+at some thread, ask any other thread to stop executing and join those threads
+- Create the supervisor thread which will do tasks in supervise_prog(). If fail,
+redirect to helper function for this case and call pthread_join on philo threads
+- Set the terminate_prog to 0 so philo threads can start with their routine
+
+Return: 0 on success, -1 on errors
+*/
 int	init_threads(t_data *data, pthread_t *supervisor)
 {
 	size_t		i;
@@ -31,8 +40,8 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 	}
 	if (pthread_create(supervisor, NULL, &supervise_prog, data) != 0)
 	{
-		join_threads(data, data->head_count);
 		supervisor_creation_fail(data);
+		join_threads(data, data->head_count);
 		return (-1);
 	}
 	pthread_mutex_lock(&data->termination_access);
@@ -41,6 +50,11 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 	return (0);
 }
 
+/*
+- Call pthread_join based on the number passed to the function. If fail, display
+a message to the screen
+- If the 
+*/
 int	join_threads(t_data *data, size_t quantity)
 {
 	size_t	i;

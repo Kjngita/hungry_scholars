@@ -52,8 +52,8 @@ typedef struct s_philo
 }	t_philo;
 
 int			validate_args(int ac, char **av);
-int			ft_atoi(char *str);
-void		ft_atoi_beginning(char *str, size_t *i, int *sign);
+int			philo_atoi(char *str);
+void		philo_atoi_beginning(char *str, size_t *i, int *sign);
 
 int			register_data(int ac, char **av, t_data *supervisor);
 void		basic_data(int ac, char **av, t_data *data);
@@ -80,7 +80,7 @@ int			check_if_starved(t_data *data);
 void		death_notice(t_philo *philo);
 int			check_if_all_full(t_data *data);
 
-int			merge_threads_back(t_data *data, pthread_t *supervisor);
+int			wait_threads_to_finish(t_data *data, pthread_t *supervisor);
 int			print_err_n_return_value(char *msg, int value);
 void		cleanup_data(t_data *data);
 void		dump_forks(t_data **data, size_t quantity);

@@ -12,6 +12,19 @@
 
 #include "header_philo.h"
 
+/*
+For t_data struct:
+- Fill with info from user input, malloc necessary spaces, initialize 2 mutexes
+used for printing messages and changing terminate_prog value (now set as -1 to
+indicate not all threads have been created), set start time by helper function
+
+For each t_philo struct:
+- Give them id number, pointer to the same t_data struct, time of last meal,
+pointers to fork mutexes, and initialize mutex for updating/checking last meal
+and number of meals
+
+Return: 0 on success, -1 on errors
+*/
 int	register_data(int ac, char **av, t_data *data)
 {
 	size_t	i;
@@ -40,16 +53,28 @@ int	register_data(int ac, char **av, t_data *data)
 	return (0);
 }
 
+/*
+Set number of philos, time to die, time to eat, time to sleep,
+and possible number of required meals in t_data struct
+(helper function of register_data())
+*/
 void	basic_data(int ac, char **av, t_data *data)
 {
-	data->head_count = ft_atoi(av[1]);
-	data->hunger_endurance = ft_atoi(av[2]);
-	data->time_to_eat = ft_atoi(av[3]);
-	data->time_to_sleep = ft_atoi(av[4]);
+	data->head_count = philo_atoi(av[1]);
+	data->hunger_endurance = philo_atoi(av[2]);
+	data->time_to_eat = philo_atoi(av[3]);
+	data->time_to_sleep = philo_atoi(av[4]);
 	if (ac == 6)
-		data->forced_meals = ft_atoi(av[5]);
+		data->forced_meals = philo_atoi(av[5]);
 }
 
+/*
+Malloc the memory for the array of pthread_t (used when creating philo threads),
+array of t_philo structs, array of fork mutexes then initiate the mutexes
+(helper function of register_data())
+
+Return: 0 on success, -1 on errors
+*/
 int	reserve_space_for_stuff(t_data *data)
 {
 	size_t	i;
@@ -76,6 +101,11 @@ int	reserve_space_for_stuff(t_data *data)
 	return (0);
 }
 
+/*
+Give instruction for each philo where to claim left and right fork mutexes 
+from the array of fork mutexes
+(helper function of register_data())
+*/
 void	assign_forks(t_data *data, size_t i)
 {
 	data->philo_queue[i].left_fork = &data->forks[i];
@@ -88,6 +118,11 @@ void	assign_forks(t_data *data, size_t i)
 	}
 }
 
+/*
+Convert the info of time stored in the timeval struct to an integer
+
+Return: The time in milisecond
+*/
 uint64_t	simplified_time(void)
 {
 	struct timeval	this_moment;

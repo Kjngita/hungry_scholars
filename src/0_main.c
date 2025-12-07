@@ -12,13 +12,19 @@
 
 #include "header_philo.h"
 
+/*	START OF PROGRAM
+- Validate input
+- Memset the t_data struct with 0, then fill in data from input and time 
+- Initialize the threads (philos and supervisor)
+- Call pthread_join to wait for philo and supervisor threads to finish tasks
+- Destroy mutexes and clean up when threads are done executing
+- Return (end the program) with 0 on success or 1 on errors
+*/
 int	main(int ac, char **av)
 {
 	t_data		data;
 	pthread_t	supervisor;
 
-	if (!(ac == 5 || ac == 6))
-		return (print_err_n_return_value("Incorrect number of args", 1));
 	if (validate_args(ac, av) == -1)
 		return (1);
 	memset(&data, 0, sizeof(t_data));
@@ -33,13 +39,22 @@ int	main(int ac, char **av)
 		cleanup_data(&data);
 		return (1);
 	}
-	if (merge_threads_back(&data, &supervisor) == -1)
+	if (wait_threads_to_finish(&data, &supervisor) == -1)
+	{
+		cleanup_data(&data);
 		return (1);
+	}
 	cleanup_data(&data);
 	return (0);
 }
 
-int	merge_threads_back(t_data *data, pthread_t *supervisor)
+/*
+Wait for philo and supervisor threads to finish executing,
+then destroy mutex for meal info in each philo thread.
+
+Return: 0 on success, -1 on errors
+*/
+int	wait_threads_to_finish(t_data *data, pthread_t *supervisor)
 {
 	if (pthread_join(*supervisor, NULL) != 0)
 		return (print_err_n_return_value("S-thread join failed", -1));

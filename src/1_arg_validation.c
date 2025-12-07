@@ -12,17 +12,26 @@
 
 #include "header_philo.h"
 
+/*
+Perform check on user input whether or not:
+- Argument count is of acceptable quantity
+- Arguments are positive integers smaller or equal to INT_MAX
+
+Return: 0 on no error, -1 on errors
+*/
 int	validate_args(int ac, char **av)
 {
 	int	i;
 	int	number;
 
+	if (!(ac == 5 || ac == 6))
+		return (print_err_n_return_value("Incorrect number of args", -1));
 	if (!av || !*av)
-		return (-1);
+		return (print_err_n_return_value("Could not read av", -1));
 	i = 1;
 	while (i < ac)
 	{
-		number = ft_atoi(av[i]);
+		number = philo_atoi(av[i]);
 		if (number <= 0)
 			return (print_err_n_return_value("Invalid argument", -1));
 		i++;
@@ -30,7 +39,13 @@ int	validate_args(int ac, char **av)
 	return (0);
 }
 
-int	ft_atoi(char *str)
+/*
+Turn a string to integer. Skip spaces at the beginning and the end.
+Other than 1 possible sign for the number, accept only digits.
+
+Return: -1 on errors (not standard/too big integer) or the converted integer
+*/
+int	philo_atoi(char *str)
 {
 	size_t	i;
 	long	nbr;
@@ -41,7 +56,7 @@ int	ft_atoi(char *str)
 	i = 0;
 	nbr = 0;
 	sign = 1;
-	ft_atoi_beginning(str, &i, &sign);
+	philo_atoi_beginning(str, &i, &sign);
 	while (str[i] && str[i] != ' ')
 	{
 		if (nbr > INT_MAX || str[i] < '0' || str[i] > '9')
@@ -56,7 +71,11 @@ int	ft_atoi(char *str)
 	return (nbr * sign);
 }
 
-void	ft_atoi_beginning(char *str, size_t *i, int *sign)
+/*
+Skip spaces in user input, then accept only 1 sign for the number if any
+(helper function of philo_atoi())
+*/
+void	philo_atoi_beginning(char *str, size_t *i, int *sign)
 {
 	while (str[*i] && str[*i] == ' ')
 		(*i)++;
