@@ -10,7 +10,7 @@ CFILES = $(S_DIR)/0_main.c \
 	$(S_DIR)/3_threads_start.c \
 	$(S_DIR)/4_philos_schedule.c \
 	$(S_DIR)/4_supervisor_tasks.c \
-	$(S_DIR)/4_messenger.c \
+	$(S_DIR)/4_helpers.c \
 	$(S_DIR)/5_wipeout.c
 
 O_DIR = objdir

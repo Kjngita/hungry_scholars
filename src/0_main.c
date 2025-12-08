@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 15:45:07 by gita              #+#    #+#             */
-/*   Updated: 2025/12/05 17:59:29 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/08 22:32:02 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,15 @@ int	wait_threads_to_finish(t_data *data, pthread_t *supervisor)
 	if (dump_meal_mutex(data, data->head_count) == -1)
 		return (-1);
 	return (0);
+}
+
+/*
+Special case for only 1 philo.
+*/
+void	lonely_philo(t_philo *philo)
+{
+	pthread_mutex_lock(philo->left_fork);
+	announcement_to_screen(philo->data, philo, "has taken a fork");
+	usleep(philo->data->hunger_endurance * 1000);
+	pthread_mutex_unlock(philo->left_fork);
 }

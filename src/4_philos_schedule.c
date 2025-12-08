@@ -6,12 +6,22 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/06 19:47:46 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/08 23:03:25 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header_philo.h"
 
+/*
+Healthy lifestyle designated to philos:
+- Wait for all philo threads to be created; redirect to lonely_philo() if needed
+- Ask even-number-id philos to delay a bit so the rest can start first and avoid
+data racing
+- Enter the infinite loop of taking forks -> eat -> sleep -> think. Exit loop
+when program needs to stop
+
+Return: NULL when philo threads are not supposed to execute anymore
+*/
 void	*philo_prog(void *arg)
 {
 	t_philo	*philo;
@@ -41,6 +51,13 @@ void	*philo_prog(void *arg)
 	return (NULL);
 }
 
+/*
+- To help prevent data races, odd-numbered-id philos will be asked to grab the
+left fork first then the right fork. The opposite for even-numbered-id philos.
+- Each philo will check themselves right after the moment they acquire the 2nd
+fork whether they starved already before continuing further.
+(helper function of philo_prog())
+*/
 void	claim_forks(t_philo *philo)
 {
 	if (philo->id % 2 != 0)
@@ -48,39 +65,28 @@ void	claim_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 		announcement_to_screen(philo->data, philo, "has taken a fork");
 		pthread_mutex_lock(philo->right_fork);
-		if (self_checkup(philo) == -1)
-			return ;
-		announcement_to_screen(philo->data, philo, "has taken a fork");
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right_fork);
 		announcement_to_screen(philo->data, philo, "has taken a fork");
 		pthread_mutex_lock(philo->left_fork);
-		if (self_checkup(philo) == -1)
-			return ;
-		announcement_to_screen(philo->data, philo, "has taken a fork");
 	}
-}
-
-int	self_checkup(t_philo *philo)
-{
-	uint64_t	last_bite;
-
-	pthread_mutex_lock(&philo->meal_info_access);
-	last_bite = philo->last_bite;
-	pthread_mutex_unlock(&philo->meal_info_access);
-	if (philo->data->hunger_endurance < simplified_time() - last_bite)
+	if (self_checkup(philo) == -1)
 	{
-		pthread_mutex_lock(&philo->data->termination_access);
-		philo->data->terminate_prog = 2;
-		philo->data->dead_philo_id = philo->id;
-		pthread_mutex_unlock(&philo->data->termination_access);
-		return (-1);
+		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
+		return ;
 	}
-	return (0);
+	announcement_to_screen(philo->data, philo, "has taken a fork");
 }
 
+/*
+When philo got both forks and program can still continue, update time of last
+meal and usleep for the duration of time_to_eat. Then increment the meals eaten
+and unlock fork mutexes for other philos to use.
+(helper function of philo_prog())
+*/
 void	eat_cleanly(t_philo *philo)
 {
 	if (check_if_stopped(philo->data) > 0)
@@ -97,6 +103,11 @@ void	eat_cleanly(t_philo *philo)
 	pthread_mutex_unlock(philo->left_fork);
 }
 
+/*
+When program can still continue, print to screen the sleeping action and usleep
+for the time_to_sleep duration.
+(helper function of philo_prog())
+*/
 void	sleep_soundly(t_philo *philo)
 {
 	if (check_if_stopped(philo->data) > 0)
@@ -105,6 +116,13 @@ void	sleep_soundly(t_philo *philo)
 	usleep(philo->data->time_to_sleep * 1000);
 }
 
+/*
+When program can still continue, make calculation to see if philo can afford to
+think without dying. If philo can think for at least 2 milisecond, usleep half
+of that time (in small 500 microsecond invervals to check if program needs to
+stop) before trying to claim forks again.
+(helper function of philo_prog())
+*/
 void	think_boldly(t_philo *philo)
 {
 	uint64_t	max_thinking;
@@ -115,12 +133,14 @@ void	think_boldly(t_philo *philo)
 	max_thinking = philo->data->hunger_endurance - philo->data->time_to_sleep
 		- philo->data->time_to_eat;
 	if (max_thinking > 2)
-		announcement_to_screen(philo->data, philo, "is thinking");
-	start_think = simplified_time();
-	while (simplified_time() - start_think < max_thinking / 2)
 	{
-		if (check_if_stopped(philo->data) > 0)
-			break ;
-		usleep(500);
+		announcement_to_screen(philo->data, philo, "is thinking");
+		start_think = simplified_time();
+		while (simplified_time() - start_think < max_thinking / 2)
+		{
+			if (check_if_stopped(philo->data) > 0)
+				break ;
+			usleep(500);
+		}
 	}
 }
