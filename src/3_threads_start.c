@@ -53,7 +53,10 @@ int	init_threads(t_data *data, pthread_t *supervisor)
 /*
 - Call pthread_join based on the number passed to the function. If fail, display
 a message to the screen
-- If the 
+- If the number passed to the function is smaller than the number of philos,
+it indicates that the thread creation loop had a problem, hence return -1
+
+Return: 0 on success, -1 on errors
 */
 int	join_threads(t_data *data, size_t quantity)
 {
@@ -81,6 +84,11 @@ int	join_threads(t_data *data, size_t quantity)
 	return (0);
 }
 
+/*
+When the supervisor thread failed to be created, set the terminate_prog value
+to 1 for philo threads to stop, then print an error message to screen
+(helper function of init_threads())
+*/
 void	supervisor_creation_fail(t_data *data)
 {
 	pthread_mutex_lock(&data->termination_access);

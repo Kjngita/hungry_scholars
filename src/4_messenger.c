@@ -12,6 +12,14 @@
 
 #include "header_philo.h"
 
+/*
+Function to print out actions of philos
+- First, lock the mutex for termination checking. Release that mutex, if program
+needs to stop then return, otherwise continue
+- Lock the mutex for printing
+- Get the timestamp of the current printing action and print needed info
+- Release the mutex for printing
+*/
 void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 {
 	uint64_t	timestamp_in_milsec;
@@ -29,6 +37,11 @@ void	announcement_to_screen(t_data *data, t_philo *philo, char *activity)
 	pthread_mutex_unlock(&data->printer_access);
 }
 
+/*
+- Lock the mutex for printing
+- Get the timestamp of the current printing action and print death info
+- Release the mutex for printing
+*/
 void	death_notice(t_philo *philo)
 {
 	uint64_t	timestamp_in_milsec;
@@ -39,6 +52,9 @@ void	death_notice(t_philo *philo)
 	pthread_mutex_unlock(&philo->data->printer_access);
 }
 
+/*
+Special case for only 1 philo.
+*/
 void	lonely_philo(t_philo *philo)
 {
 	pthread_mutex_lock(philo->left_fork);
