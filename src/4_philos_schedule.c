@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 18:37:20 by gita              #+#    #+#             */
-/*   Updated: 2025/12/08 23:03:25 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/09 16:11:07 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,7 @@ void	claim_forks(t_philo *philo)
 		pthread_mutex_lock(philo->left_fork);
 	}
 	if (self_checkup(philo) == -1)
-	{
-		pthread_mutex_unlock(philo->left_fork);
-		pthread_mutex_unlock(philo->right_fork);
 		return ;
-	}
 	announcement_to_screen(philo->data, philo, "has taken a fork");
 }
 
@@ -90,7 +86,11 @@ and unlock fork mutexes for other philos to use.
 void	eat_cleanly(t_philo *philo)
 {
 	if (check_if_stopped(philo->data) > 0)
+	{
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 		return ;
+	}
 	pthread_mutex_lock(&philo->meal_info_access);
 	philo->last_bite = simplified_time();
 	pthread_mutex_unlock(&philo->meal_info_access);

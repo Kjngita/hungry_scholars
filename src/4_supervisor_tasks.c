@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 19:02:33 by gita              #+#    #+#             */
-/*   Updated: 2025/12/08 23:03:38 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/09 16:16:06 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void	*supervise_prog(void *arg)
 	t_data	*data;
 
 	data = (t_data *)arg;
+	if (wait_all_threads(data) == 1)
+		return (NULL);
 	while (1)
 	{
 		if (check_if_stopped(data) == 1)

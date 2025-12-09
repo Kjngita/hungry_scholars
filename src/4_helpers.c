@@ -6,7 +6,7 @@
 /*   By: gita <gita@student.hive.fi>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 16:10:27 by gita              #+#    #+#             */
-/*   Updated: 2025/12/08 23:02:38 by gita             ###   ########.fr       */
+/*   Updated: 2025/12/09 16:13:46 by gita             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,14 @@ Return: 0 when can start, 1 when need to stop
 */
 int	wait_all_threads(t_data *data)
 {
+	int	check;
+
 	while (1)
 	{
-		if (check_if_stopped(data) == 0)
-			return (0);
-		if (check_if_stopped(data) == 1)
-			return (1);
+		check = check_if_stopped(data);
+		if (check == 0 || check == 1)
+			return (check);
+		usleep(100);
 	}
 }
 
